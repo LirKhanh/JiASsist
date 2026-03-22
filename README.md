@@ -1,8 +1,8 @@
 # JiASsist - Backend
 
-Mã nguồn backend cho project JiASsist.
+Backend cho Project JiASsist.
 
-## Công nghệ sử dụng (đọc từ `Program.cs` và `appsettings.json`)
+## Công nghệ sử dụng 
 - .NET 8 (ASP.NET Core Web API)
 - C#
 - PostgreSQL với `Npgsql` (chuỗi kết nối trong `ConnectionStrings:PostgresDb` của `appsettings.json`)
@@ -30,7 +30,7 @@ cd JiASsist
 
 2. Mở project bằng Visual Studio 2022/2026 (mở file `.sln` nếu có) hoặc mở thư mục trong VS Code.
 
-## Cài đặt package chính (nếu cần)
+## Cài đặt package chính 
 Chạy trong thư mục chứa `*.csproj` của API:
 
 ```powershell
@@ -65,7 +65,7 @@ dotnet build
 dotnet run --project <PathToYourApiProject.csproj>
 ```
 
-Ứng dụng mặc định sẽ lắng nghe trên `https://localhost:5001` hoặc endpoint được chỉ định trong `launchSettings.json`.
+Ứng dụng mặc định sẽ chạy trên `https://localhost:5001` hoặc endpoint được chỉ định trong `launchSettings.json`.
 
 ## Ghi chú
 - Đảm bảo thay `Jwt:Key` bằng một giá trị bí mật mạnh trước khi deploy.
