@@ -1,0 +1,20 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+
+  "ConnectionStrings": {
+    "PostgresDb": "Host=localhost;Port=5432;Database=JiASsist;Username=postgres;Password=your_password"
+  },
+
+  "Jwt": {
+    "Key": "ChangeThisToAStrongSecretKeyForProduction",
+    "Issuer": "JiASsist",
+    "Audience": "JiASsistClient",
+    "ExpiresInMinutes": 1440
+  }
+}

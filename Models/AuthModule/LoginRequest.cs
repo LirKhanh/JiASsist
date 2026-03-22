@@ -1,18 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace JiASsist.Models
+namespace JiASsist.Models.AuthModule
 {
-    public class RegisterRequest
+    public class LoginRequest
     {
         [Required]
-        [MaxLength(35)]
+        [MaxLength(256)]
         public string Username { get; set; } = string.Empty;
         [Required]
         [MaxLength(256)]
         public string Password { get; set; } = string.Empty;
-        [MaxLength(256)]
-        public string? Email { get; set; }
-        [MaxLength(256)]
-        public string? Fullname { get; set; }
     }
 }

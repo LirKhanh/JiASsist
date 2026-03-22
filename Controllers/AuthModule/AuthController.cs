@@ -4,8 +4,10 @@ using Microsoft.Extensions.Options;
 using Npgsql;
 using JiASsist.Helpers;
 using JiASsist.Models;
+using JiASsist.Models.AuthModule;
+using Microsoft.AspNetCore.Authorization;
 
-namespace JiASsist.Controllers
+namespace JiASsist.Controllers.AuthModule
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -65,7 +67,7 @@ namespace JiASsist.Controllers
                 ExpiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiresInMinutes),
                 User = user
             };
-
+            PasswordHasher.Hash(request.Password);
             return Ok(new ApiResponse<LoginResponse>
             {
                 Success = true,
