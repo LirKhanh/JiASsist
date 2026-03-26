@@ -26,7 +26,8 @@ namespace JiASsist.Helpers
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.Username ?? string.Empty),
                 new Claim("fullname", user.Fullname ?? string.Empty),
                 new Claim("email", user.Email ?? string.Empty),
-                new Claim("role", user.RoleId ?? string.Empty),
+                new Claim(ClaimTypes.Role, user.RoleId ?? string.Empty),
+                new Claim("projects", user.ProjectJoin ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

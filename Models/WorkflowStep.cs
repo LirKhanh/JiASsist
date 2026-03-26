@@ -35,5 +35,7 @@ namespace JiASsist.Models
         [Column("update_by")]
         [MaxLength(35)]
         public string? UpdateBy { get; set; }
+        [NotMapped]
+        public string? ActionType { get; set; }
     }
 }

@@ -13,6 +13,6 @@ namespace JiASsist.Models.AuthModule
         [MaxLength(256)]
         public string? Email { get; set; }
         [MaxLength(256)]
-        public string? Fullname { get; set; }
+        public string? Fullname { get; set; } 
     }
 }

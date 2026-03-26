@@ -30,7 +30,9 @@ namespace JiASsist.Controllers.AuthModule
         {
             using var conn = _conn;
             await conn.OpenAsync();
-            var sql = @"SELECT user_id as UserId, username as Username, password as Password, status as Status, fullName as FullName, role_id as RoleId
+            var sql = @"SELECT user_id as UserId, username as Username, password as Password, 
+                               status as Status, fullName as FullName, role_id as RoleId,
+                               project_join as ProjectJoin
                         FROM users
                         WHERE username = @Username
                         LIMIT 1";

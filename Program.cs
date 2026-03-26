@@ -1,16 +1,18 @@
-using JiASsist.Middleware;
-using JiASsist.Helpers;
-using Microsoft.Extensions.Options;
-using Npgsql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Npgsql;
+using System.Security.Claims;
 using System.Text;
+using JiASsist.Helpers;
+using JiASsist.Middleware;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+builder.Services.AddScoped<ProjectAuthorizeFilter>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -48,7 +50,8 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtSettings.Issuer,
         ValidAudience = jwtSettings.Audience,
         IssuerSigningKey = new SymmetricSecurityKey(key),
-        ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.Zero,
+        RoleClaimType = ClaimTypes.Role
     };
 });
 

@@ -7,14 +7,14 @@ namespace JiASsist.Models
     public class Project
     {
         [Key]
-        [Column("projects_id")]
+        [Column("project_id")]
         [MaxLength(35)]
         [Required]
-        public string ProjectsId { get; set; } = null!;
+        public string ProjectId { get; set; } = null!;
 
-        [Column("projects_name")]
+        [Column("project_name")]
         [MaxLength(256)]
-        public string? ProjectsName { get; set; }
+        public string? ProjectName { get; set; }
 
         [Column("description")]
         public string? Description { get; set; }
@@ -45,5 +45,7 @@ namespace JiASsist.Models
         [Column("update_by")]
         [MaxLength(35)]
         public string? UpdateBy { get; set; }
+        [NotMapped]
+        public string ? ActionType { get; set; }
     }
 }

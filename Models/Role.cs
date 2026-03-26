@@ -15,6 +15,8 @@ namespace JiASsist.Models
         [Column("role_name")]
         [MaxLength(256)]
         public string? RoleName { get; set; }
+        [Column("module_accept")]
+        public string? ModuleAccept { get; set; }
 
         [Column("status")]
         public bool? Status { get; set; }
