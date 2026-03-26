@@ -1,39 +1,32 @@
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
 namespace JiASsist.Models
 {
-    [Table("users")]
-    public class User
+    [Table("sprints")]
+    public class Sprint
     {
         [Key]
-        [Column("user_id")]
+        [Column("sprint_id")]
         [MaxLength(35)]
         [Required]
-        public string UserId { get; set; } = null!;
+        public string SprintId { get; set; } = null!;
 
-        [Column("username")]
+        [Key]
+        [Column("project_id")]
         [MaxLength(35)]
-        public string? Username { get; set; }
+        [Required]
+        public string ProjectId { get; set; } = null!;
 
-        [Column("password")]
+        [Column("sprint_name")]
         [MaxLength(256)]
-        public string? Password { get; set; }
+        public string? SprintName { get; set; }
 
-        [Column("email")]
-        [MaxLength(256)]
-        public string? Email { get; set; }
+        [Column("start_date")]
+        public DateTime? StartDate { get; set; }
 
-        [Column("fullname")]
-        [MaxLength(256)]
-        public string? Fullname { get; set; }
-
-        [Column("role_id")]
-        [MaxLength(35)]
-        public string? RoleId { get; set; }
-
-        [Column("project_join")]
-        public string? ProjectJoin { get; set; }
+        [Column("end_date")]
+        public DateTime? EndDate { get; set; }
 
         [Column("status")]
         public bool? Status { get; set; }

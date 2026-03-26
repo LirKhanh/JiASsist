@@ -1,6 +1,6 @@
 ﻿namespace JiASsist.Controllers.AdministrateModule
 {
-    public class UserController
+    public class ProjectController
     {
     }
 }

@@ -7,17 +7,18 @@ using JiASsist.Models;
 using JiASsist.Models.AuthModule;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace JiASsist.Controllers.AuthModule
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    public class AuthenticationController : ControllerBase
     {
         private readonly NpgsqlConnection _conn;
         private readonly JwtHelper _jwtHelper;
         private readonly JwtSettings _jwtSettings;
 
-        public AuthController(NpgsqlConnection conn, JwtHelper jwtHelper, IOptions<JwtSettings> jwtOptions)
+        public AuthenticationController(NpgsqlConnection conn, JwtHelper jwtHelper, IOptions<JwtSettings> jwtOptions)
         {
             _conn = conn;
             _jwtHelper = jwtHelper;
