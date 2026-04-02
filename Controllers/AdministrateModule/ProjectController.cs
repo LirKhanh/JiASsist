@@ -12,8 +12,8 @@ namespace JiASsist.Controllers.AdministrateModule
         public ProjectController(NpgsqlConnection conn) : base(conn)
         {}
 
-        [HttpGet("project")]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("GetProject")]
+        public async Task<IActionResult> GetProject()
         {
             using var conn = _conn;
             await conn.OpenAsync();
@@ -32,28 +32,30 @@ namespace JiASsist.Controllers.AdministrateModule
         }
 
 
-        [HttpPost("project")]
-        public async Task<IActionResult> AddAndEdit([FromBody] Project model)
+        [HttpPost("AddOrEdit")]
+        public async Task<IActionResult> AddOrEdit([FromBody] Project model)
         {
             using var conn = _conn;
             string sql = "";
             await conn.OpenAsync();
             if (model.ActionType == "A")
             {
+                model.CreatedAt = DateTime.UtcNow;
                 sql = @"INSERT INTO projects(project_id, project_name, description,pm_id,start_date, end_date, status, created_by, created_at)
                 VALUES (@ProjectId, @ProjectName, @Description,@PmId,@StartDate, @EndDate,  @Status, @CreatedBy, @CreatedAt)
                 RETURNING *";
             }
             else
             {
+                model.UpdateAt = DateTime.UtcNow;
                 sql = @"UPDATE projects set project_name = @ProjectName, description = @Description,pm_id = @PmId,start_date = @StartDate, end_date =@EndDate, status = @Status, update_by = @UpdateBy, update_at = @UpdateAt
                 WHERE project_id = @ProjectId
                 RETURNING *";
             }
 
-            var result = await conn.QueryFirstOrDefaultAsync<WorkflowStep>(sql, model);
+            var result = await conn.QueryFirstOrDefaultAsync<Project>(sql, model);
 
-            return Ok(new ApiResponse<WorkflowStep>
+            return Ok(new ApiResponse<Project>
             {
                 Success = true,
                 Message = "Created successfully",

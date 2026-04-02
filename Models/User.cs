@@ -28,10 +28,6 @@ namespace JiASsist.Models
         [MaxLength(256)]
         public string? Fullname { get; set; }
 
-        [Column("role_id")]
-        [MaxLength(35)]
-        public string? RoleId { get; set; }
-
         [Column("project_join")]
         public string? ProjectJoin { get; set; }
 
@@ -51,5 +47,11 @@ namespace JiASsist.Models
         [Column("update_by")]
         [MaxLength(35)]
         public string? UpdateBy { get; set; }
+        [Column("admin_yn")]
+        public bool? AdminYn { get; set; }
+        [Column("pm_yn")]
+        public bool? PmYn { get; set; }
+        [NotMapped]
+        public string? ActionType { get; set; }
     }
 }

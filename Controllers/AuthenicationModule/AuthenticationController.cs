@@ -31,7 +31,7 @@ namespace JiASsist.Controllers.AuthModule
             using var conn = _conn;
             await conn.OpenAsync();
             var sql = @"SELECT user_id as UserId, username as Username, password as Password, 
-                               status as Status, fullName as FullName, role_id as RoleId,
+                               status as Status, fullName as FullName, admin_yn as AdminYn,pm_yn as PmYn,
                                project_join as ProjectJoin
                         FROM users
                         WHERE username = @Username
@@ -141,7 +141,6 @@ namespace JiASsist.Controllers.AuthModule
                 Username = request.Username,
                 Email = request.Email,
                 Fullname = request.Fullname,
-                RoleId = null,
                 Status = false
             };
 

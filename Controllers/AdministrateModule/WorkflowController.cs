@@ -5,7 +5,6 @@ using Npgsql;
 
 using JiASsist.Models.AuthModule;
 using Microsoft.AspNetCore.Mvc;
-using Npgsql;
 
 namespace JiASsist.Controllers.AdministrateModule
 {
@@ -16,7 +15,7 @@ namespace JiASsist.Controllers.AdministrateModule
         public WorkflowController(NpgsqlConnection conn) : base(conn)
         { }
 
-        [HttpGet("workflow")]
+        [HttpGet("GetWorkFlow")]
         public async Task<IActionResult> GetAll()
         {
             using var conn = _conn;
@@ -36,19 +35,21 @@ namespace JiASsist.Controllers.AdministrateModule
         }
 
 
-        [HttpPost("workflow")]
-        public async Task<IActionResult> AddAndEdit([FromBody] WorkflowStep model)
+        [HttpPost("AddOrEdit")]
+        public async Task<IActionResult> AddOrEdit([FromBody] WorkflowStep model)
         {
             using var conn = _conn;
             string sql = "";
             await conn.OpenAsync();
             if (model.ActionType == "A")
             {
+                model.CreatedAt = DateTime.UtcNow;
                 sql = @"INSERT INTO workflow_step(step_id, step_name, step, status, created_by, created_at)
                 VALUES (@StepId, @StepName, @Step, @Status, @CreatedBy, @CreatedAt)
                 RETURNING *";
             }
             else {
+                model.UpdateAt = DateTime.UtcNow;
                 sql = @"UPDATE workflow_step set step_name = @StepName, step = @Step, status = @Status, update_by = @UpdateBy, update_at = @UpdateAt
                 WHERE step_id = @StepId
                 RETURNING *";
