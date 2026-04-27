@@ -21,7 +21,7 @@ namespace JiASsist.Controllers.AdministrateModule
             using var conn = _conn;
             await conn.OpenAsync();
 
-            var sql = @"SELECT * FROM workflow_step";
+            var sql = @"select * from workflow_step order by step";
 
             var workflowSteps = await conn.QueryAsync<WorkflowStep>(sql);
 
@@ -44,13 +44,13 @@ namespace JiASsist.Controllers.AdministrateModule
             if (model.ActionType == "A")
             {
                 model.CreatedAt = DateTime.UtcNow;
-                sql = @"INSERT INTO workflow_step(step_id, step_name, step, status, created_by, created_at)
-                VALUES (@StepId, @StepName, @Step, @Status, @CreatedBy, @CreatedAt)
+                sql = @"INSERT INTO workflow_step(step_id, step_name, step, status, created_by, created_at, pre_step_id,next_step_id)
+                VALUES (@StepId, @StepName, @Step, @Status, @CreatedBy, @CreatedAt, @PreStepId, @NextStepId)
                 RETURNING *";
             }
             else {
                 model.UpdateAt = DateTime.UtcNow;
-                sql = @"UPDATE workflow_step set step_name = @StepName, step = @Step, status = @Status, update_by = @UpdateBy, update_at = @UpdateAt
+                sql = @"UPDATE workflow_step set step_name = @StepName, step = @Step, status = @Status, update_by = @UpdateBy, update_at = @UpdateAt,pre_step_id = @PreStepId,next_step_id = @NextStepId
                 WHERE step_id = @StepId
                 RETURNING *";
             }

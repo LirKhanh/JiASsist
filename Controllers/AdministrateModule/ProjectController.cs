@@ -25,7 +25,7 @@ namespace JiASsist.Controllers.AdministrateModule
             return Ok(new ApiResponse<IEnumerable<Project>>
             {
                 Success = true,
-                Message = "Get workflow steps successfully",
+                Message = "Get projects successfully",
                 Data = projects,
                 Error = ""
             });

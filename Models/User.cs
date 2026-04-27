@@ -28,7 +28,7 @@ namespace JiASsist.Models
         [MaxLength(256)]
         public string? Fullname { get; set; }
 
-        [Column("project_join")]
+        [NotMapped]
         public string? ProjectJoin { get; set; }
 
         [Column("status")]

@@ -10,7 +10,7 @@ namespace JiASsist.Models
         [Column("issue_attachment_id")]
         [MaxLength(35)]
         [Required]
-        public string IssueAttachmentId { get; set; } = null!;
+        public int IssueAttachmentId { get; set; } 
 
         [Column("issue_id")]
         [MaxLength(35)]

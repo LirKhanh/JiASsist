@@ -46,6 +46,8 @@ namespace JiASsist.Models
         [MaxLength(35)]
         public string? UpdateBy { get; set; }
         [NotMapped]
+        public string ? PmName { get; set; }
+        [NotMapped]
         public string ? ActionType { get; set; }
     }
 }

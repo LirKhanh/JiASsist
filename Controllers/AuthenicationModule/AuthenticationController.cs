@@ -8,7 +8,7 @@ using JiASsist.Models.AuthModule;
 using Microsoft.AspNetCore.Authorization;
 
 
-namespace JiASsist.Controllers.AuthModule
+namespace JiASsist.Controllers.AuthenicationModule
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -31,8 +31,7 @@ namespace JiASsist.Controllers.AuthModule
             using var conn = _conn;
             await conn.OpenAsync();
             var sql = @"SELECT user_id as UserId, username as Username, password as Password, 
-                               status as Status, fullName as FullName, admin_yn as AdminYn,pm_yn as PmYn,
-                               project_join as ProjectJoin
+                               status as Status, fullName as FullName, admin_yn as AdminYn,pm_yn as PmYn
                         FROM users
                         WHERE username = @Username
                         LIMIT 1";
@@ -49,8 +48,7 @@ namespace JiASsist.Controllers.AuthModule
                 });
             }
 
-            // Verify hashed password
-            //PasswordHasher.Hash(request.Password);
+
             if (string.IsNullOrEmpty(user.Password) || !PasswordHasher.Verify(user.Password, request.Password))
             {
                 return Unauthorized(new ApiResponse<object>
@@ -63,12 +61,22 @@ namespace JiASsist.Controllers.AuthModule
             }
 
             var token = _jwtHelper.GenerateToken(user);
-
+            var workflowSteps = await conn.QueryAsync<WorkflowStep>(@"SELECT step_id as StepId, step_name as StepName, step as Step, pre_step_id as PreStepId, next_step_id as NextStepId
+                                FROM workflow_step
+                                WHERE status is true order by step;
+                                ");
+            var issuePriorities = await conn.QueryAsync<IssuePriority>(@"SELECT issue_priority_id as IssuePriorityId, issue_priority_name as IssuePriorityName
+	                            FROM issue_priorities where status is true;");
+            var issueTypes = await conn.QueryAsync<IssueType>(@"SELECT issue_type_id as IssueTypeId, issue_type_name as IssueTypeName
+	                            FROM issue_types where status is true;");
             var response = new LoginResponse
             {
                 Token = token,
                 ExpiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiresInMinutes),
-                User = user
+                User = user,
+                WorkflowStep = workflowSteps,
+                IssuePriorities = issuePriorities,
+                IssueTypes = issueTypes,
             };
             PasswordHasher.Hash(request.Password);
             return Ok(new ApiResponse<LoginResponse>
@@ -99,7 +107,6 @@ namespace JiASsist.Controllers.AuthModule
                 });
             }
 
-            // Retrieve new user id from DB function. Fallback to GUID if function fails.
             string? userId = null;
             try
             {

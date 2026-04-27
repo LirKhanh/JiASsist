@@ -10,7 +10,7 @@ namespace JiASsist.Models
         [Column("issue_comment_id")]
         [MaxLength(35)]
         [Required]
-        public string IssueCommentId { get; set; } = null!;
+        public int IssueCommentId { get; set; } 
 
         [Column("content")]
         public string? Content { get; set; }

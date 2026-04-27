@@ -10,7 +10,7 @@ namespace JiASsist.Models
         [Column("issue_history_id")]
         [MaxLength(35)]
         [Required]
-        public string IssueHistoryId { get; set; } = null!;
+        public int IssueHistoryId { get; set; } 
 
         [Column("issue_id")]
         [MaxLength(35)]

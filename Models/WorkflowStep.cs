@@ -21,7 +21,6 @@ namespace JiASsist.Models
 
         [Column("status")]
         public bool? Status { get; set; }
-
         [Column("created_at")]
         public DateTime? CreatedAt { get; set; }
 
@@ -35,6 +34,10 @@ namespace JiASsist.Models
         [Column("update_by")]
         [MaxLength(35)]
         public string? UpdateBy { get; set; }
+        [Column("pre_step_id")]
+        public string? PreStepId { get; set; }
+        [Column("next_step_id")]
+        public string? NextStepId { get; set; }
         [NotMapped]
         public string? ActionType { get; set; }
     }
