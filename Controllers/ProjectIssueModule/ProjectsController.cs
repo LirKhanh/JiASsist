@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using JiASsist.Controllers;
 using JiASsist.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -68,7 +68,7 @@ public class ProjectsController : BaseController
         await conn.OpenAsync();
 
         var issues = (await conn.QueryAsync<Issue>(@"
-            SELECT issue_id, issue_name, issue_status,issue_type,issue_priority_id, project_id, update_at
+            SELECT *
             FROM issues
             WHERE project_id = @ProjectId
             ORDER BY update_at DESC

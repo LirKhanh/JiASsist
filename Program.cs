@@ -57,6 +57,9 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddSingleton<JwtHelper>();
+builder.Services.AddHttpClient();
+builder.Services.Configure<JiASsist.Services.GoogleAiOptions>(builder.Configuration.GetSection("GoogleAi"));
+builder.Services.AddScoped<JiASsist.Services.AiService>();
 
 var app = builder.Build();
 
