@@ -52,6 +52,34 @@ namespace JiASsist.Services
             return "Tất cả các endpoint AI không phản hồi. Vui lòng thử lại sau.";
         }
 
+        public async Task<string> ChatWithAssistantAsync(IEnumerable<Issue> issues, string contextName, object? additionalContext, string userMessage)
+        {
+            if (string.IsNullOrEmpty(_options.ApiKey))
+            {
+                return "AI evaluation is not configured. Please provide an API key.";
+            }
+
+            var prompt = ConstructChatPrompt(issues, contextName, additionalContext, userMessage);
+            
+            foreach (var endpoint in _options.Endpoints)
+            {
+                try
+                {
+                    var response = await CallGeminiAsync(endpoint, prompt);
+                    if (!string.IsNullOrEmpty(response))
+                    {
+                        return response; 
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error calling Gemini endpoint {endpoint}: {ex.Message}");
+                }
+            }
+
+            return "Tất cả các endpoint AI không phản hồi. Vui lòng thử lại sau.";
+        }
+
         public string FormatEvaluationToText(string json)
         {
             try
@@ -168,6 +196,31 @@ namespace JiASsist.Services
   ""comparison"": ""So sánh ngắn gọn với kết quả cũ (nếu có)""
 }");
             sb.AppendLine("\nKHÔNG giải thích thêm ngoài JSON.");
+
+            return sb.ToString();
+        }
+
+        private string ConstructChatPrompt(IEnumerable<Issue> issues, string contextName, object? additionalContext, string userMessage)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("SYSTEM: Bạn là JiASsist AI - một Chuyên gia Quản lý Dự án (PM Assistant). Nhiệm vụ của bạn là đọc hiểu thông tin dự án/sprint/epic và trả lời các câu hỏi của Project Manager một cách chính xác, thân thiện, súc tích bằng TIẾNG VIỆT.");
+            sb.AppendLine("LƯU Ý: Bạn cần trả lời bằng văn bản thông thường (Markdown), liệt kê dạng gạch đầu dòng nếu cần thiết. KHÔNG trả lời bằng chuỗi JSON.");
+            
+            sb.AppendLine("\n1. Dữ liệu ngữ cảnh hiện tại:");
+            sb.AppendLine($"- Bối cảnh dữ liệu (Filter): {contextName}");
+            if (additionalContext != null)
+            {
+                sb.AppendLine($"- Bảng Mapping ID nhân sự sang Tên thật (quan trọng để bạn biết ai đang được gán task): {JsonSerializer.Serialize(additionalContext)}");
+            }
+            
+            sb.AppendLine("\n- Danh sách công việc (Issues) trong ngữ cảnh này:");
+            foreach (var issue in issues)
+            {
+                sb.AppendLine($"- ID: {issue.IssueId} | Tên: {issue.IssueName} | Status: {issue.IssueStatus} | DevRate: {issue.IssueDevRate}% | Assignee: {issue.AssigneeId} | Deadline: {issue.DeadlineDev:dd/MM/yyyy}");
+            }
+
+            sb.AppendLine("\n2. Câu hỏi của người dùng (Project Manager):");
+            sb.AppendLine(userMessage);
 
             return sb.ToString();
         }

@@ -1,4 +1,4 @@
-using Dapper;
+ï»¿using Dapper;
 using JiASsist.Models;
 using JiASsist.Models.ProjectIssuesModule;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -343,7 +343,7 @@ public class IssuesController : ControllerBase
 
             var oldDesc = oldIssue.Description ?? "";
 
-            // 2. Update description n?u có thay d?i
+            // 2. Update description n?u cÃ³ thay d?i
             if (!string.IsNullOrWhiteSpace(description) && description != oldDesc)
             {
                 await conn.ExecuteAsync(@"
@@ -388,7 +388,7 @@ public class IssuesController : ControllerBase
                 }, tran);
             }
 
-            // 4. Upload file (n?u có)
+            // 4. Upload file (n?u cÃ³)
             if (files != null && files.Count > 0)
             {
                 var folder = Path.Combine("wwwroot/uploads",
@@ -579,6 +579,57 @@ public class IssuesController : ControllerBase
 
         return Ok();
     }
+    [HttpDelete("comments/{commentId}")]
+    public async Task<IActionResult> DeleteComment(int commentId)
+    {
+        using var conn = _conn;
+        await conn.OpenAsync();
+
+        var issueId = await conn.QueryFirstOrDefaultAsync<string>(@"
+            SELECT issue_id FROM issue_comments WHERE issue_comment_id = @Id
+        ", new { Id = commentId });
+
+        if (issueId == null) return NotFound();
+
+        await conn.ExecuteAsync(@"
+            DELETE FROM issue_comments WHERE issue_comment_id = @Id
+        ", new { Id = commentId });
+
+        await _hub.Clients.All.SendAsync("CommentDeleted", new { commentId, issueId });
+
+        return Ok(new ApiResponse<int> { Success = true, Data = commentId });
+    }
+
+    [HttpDelete("attachments/{attachmentId}")]
+    public async Task<IActionResult> DeleteAttachment(int attachmentId)
+    {
+        using var conn = _conn;
+        await conn.OpenAsync();
+
+        var attachment = await conn.QueryFirstOrDefaultAsync<IssueAttachment>(@"
+            SELECT * FROM issue_attachments WHERE issue_attachment_id = @Id
+        ", new { Id = attachmentId });
+
+        if (attachment == null) return NotFound();
+
+        if (!string.IsNullOrEmpty(attachment.FilePath))
+        {
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
+        }
+
+        await conn.ExecuteAsync(@"
+            DELETE FROM issue_attachments WHERE issue_attachment_id = @Id
+        ", new { Id = attachmentId });
+
+        await _hub.Clients.All.SendAsync("AttachmentDeleted", new { attachmentId, issueId = attachment.IssueId });
+
+        return Ok(new ApiResponse<int> { Success = true, Data = attachmentId });
+    }
+
     [HttpDelete("{issueId}")]
     public async Task<IActionResult> DeleteIssue(string issueId)
     {
@@ -603,4 +654,5 @@ public class IssuesController : ControllerBase
         });
     }
 }
+
 

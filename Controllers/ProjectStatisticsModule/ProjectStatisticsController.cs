@@ -163,5 +163,50 @@ namespace JiASsist.Controllers.ProjectStatisticsModule
             var formattedText = _aiService.FormatEvaluationToText(rawEvaluationJson);
             return Ok(new ApiResponse<string> { Success = true, Data = formattedText });
         }
+
+        [HttpPost("chat/{projectId}")]
+        public async Task<IActionResult> Chat(string projectId, [FromBody] ChatRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Message))
+                return BadRequest(new ApiResponse<string> { Success = false, Message = "Message is required." });
+
+            using var conn = _conn;
+            await conn.OpenAsync();
+
+            var query = "SELECT * FROM issues WHERE project_id = @projectId AND status = true";
+            var contextName = "Toàn bộ Dự án";
+
+            if (!string.IsNullOrEmpty(request.SprintId))
+            {
+                query += " AND sprint_id = @sprintId";
+                var sprintName = await conn.QueryFirstOrDefaultAsync<string>("SELECT sprint_name FROM sprints WHERE sprint_id = @sprintId", new { request.SprintId });
+                contextName = $"Sprint: {sprintName ?? request.SprintId}";
+            }
+            if (!string.IsNullOrEmpty(request.EpicId))
+            {
+                query += " AND epic_id = @epicId";
+                var epicPrefix = contextName == "Toàn bộ Dự án" ? "Epic: " : " & Epic: ";
+                contextName += $"{epicPrefix}{request.EpicId}";
+            }
+
+            var issues = await conn.QueryAsync<Issue>(query, new { projectId, sprintId = request.SprintId, epicId = request.EpicId });
+            var users = await conn.QueryAsync<User>("SELECT user_id as UserId, username as Username FROM users");
+
+            var context = new {
+                CurrentDate = DateTime.Now,
+                UsersMap = users.ToDictionary(u => u.UserId, u => u.Username)
+            };
+
+            var aiResponse = await _aiService.ChatWithAssistantAsync(issues, contextName, context, request.Message);
+
+            return Ok(new ApiResponse<string> { Success = true, Data = aiResponse });
+        }
+    }
+
+    public class ChatRequest
+    {
+        public string? SprintId { get; set; }
+        public string? EpicId { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 }
