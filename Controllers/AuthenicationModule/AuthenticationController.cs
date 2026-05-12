@@ -124,8 +124,8 @@ namespace JiASsist.Controllers.AuthenicationModule
 
             var hashed = PasswordHasher.Hash(request.Password);
 
-            var insertSql = @"INSERT INTO users (user_id, username, password, email, fullname, role_id, status, created_at, created_by)
-                               VALUES (@UserId, @Username, @Password, @Email, @Fullname, @RoleId, @Status, @CreatedAt, @CreatedBy)";
+            var insertSql = @"INSERT INTO users (user_id, username, password, email, fullname, status, created_at, created_by)
+                               VALUES (@UserId, @Username, @Password, @Email, @Fullname, @Status, @CreatedAt, @CreatedBy)";
 
             var parameters = new
             {

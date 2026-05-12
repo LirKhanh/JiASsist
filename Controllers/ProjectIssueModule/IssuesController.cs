@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using JiASsist.Models;
 using JiASsist.Models.ProjectIssuesModule;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -153,7 +153,7 @@ public class IssuesController : ControllerBase
     [HttpPut("{issueId}")]
     public async Task<IActionResult> UpdateIssue(
     string issueId,
-    [FromBody] Issue model,
+    [FromForm] Issue model,
     [FromForm] List<IFormFile>? files)
     {
         using var conn = _conn;

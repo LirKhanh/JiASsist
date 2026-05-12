@@ -40,7 +40,7 @@ namespace JiASsist.Controllers.DashboardModule
             var filtersSql = @"
                 SELECT filter_id, type, strsql 
                 FROM filters 
-                WHERE type = 'system' OR type = @UserId
+                WHERE type = 'system' OR type ILIKE '%' || @UserId || '%'
             ";
             var filters = await conn.QueryAsync<dynamic>(filtersSql, new { UserId = userId });
 
